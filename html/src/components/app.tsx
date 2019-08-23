@@ -1,7 +1,9 @@
 import { Component, h } from 'preact';
-
+import 'bootstrap/dist/css/bootstrap.css';
+import './../fontawesome/css/fontawesome.css';
 import { ITerminalOptions, ITheme } from 'xterm';
 import { Xterm } from './terminal';
+import './../style/index.scss';
 
 if ((module as any).hot) {
     // tslint:disable-next-line:no-var-requires
@@ -38,7 +40,37 @@ const termOptions = {
 } as ITerminalOptions;
 
 export class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.myXterm = {};
+    }
+
+    onPause = () => {
+        this.myXterm.sendData(new Uint8Array([32]));
+    }
+
+    onForward = () => {
+        this.myXterm.sendData(new Uint8Array([190]));
+    }
+    onBackward = () => {
+        this.myXterm.sendData(new Uint8Array([188]));
+    }
+
     render() {
-        return <Xterm id="terminal-container" url={url} options={termOptions} />;
+        return (
+            <div className="container">
+
+                <Xterm ref={(c) => this.myXterm = c} id="terminal-container" url={url} options={termOptions}/>
+                <div className="text-center align-items-center" id="buttonsCenter">
+                    <button type="submit" onClick={this.onBackward}><span
+                        className="input-group-text"> <i>Slow</i> </span></button>
+                    <button type="submit" onClick={this.onPause}><span
+                        className="input-group-text"> <i>Pause</i> </span></button>
+                    <button type="submit" onClick={this.onForward}><span
+                        className="input-group-text"> <i>Fast</i> </span></button>
+                </div>
+            </div>
+        );
     }
 }
